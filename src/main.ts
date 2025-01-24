@@ -6,7 +6,7 @@ const storage = document.querySelector<HTMLUListElement>('#todo-storage')
 
 function fn(input: HTMLInputElement): void {
   if (storage) {
-    let a = document.createElement('li')
+    const a = document.createElement('li')
     a.innerText = input.value
     a.classList.add('todo-element')
     storage.append(a)
