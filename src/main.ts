@@ -3,6 +3,7 @@ import './style.css'
 const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
+const delete_all = document.querySelector<HTMLButtonElement>('#delete-all')
 let json_storage: string[] = []
 let checked_box: boolean[] = []
 
@@ -86,5 +87,12 @@ if (button) {
       addTodo()
       addTodoToStorage()
     }
+  })
+}
+
+if (delete_all && storage) {
+  delete_all.addEventListener('click', () => {
+    localStorage.clear()
+    storage.innerHTML = ''
   })
 }
