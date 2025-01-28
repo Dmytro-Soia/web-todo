@@ -25,8 +25,7 @@ function displayTodo(todoText: string, index: number, isChecked: boolean) {
 
     todo_li.appendChild(checkbox)
     storage.append(todo_li)
-    console.log(index);
-    
+    console.log(index)
   }
 }
 
