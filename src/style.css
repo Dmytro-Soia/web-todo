@@ -16,7 +16,7 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  margin: 100px;
+  margin: 50px 10px 0px 10px;
   height: 700px;
   width: 300px;
   background-color: #dad5d5;
@@ -26,8 +26,13 @@ body {
   display: flex;
   justify-content: center;
   width: 50%;
-  border: 1px blACK solid;
+  border: 1px black solid;
   border-radius: 5px;
+}
+
+#delete-all {
+  background-color: red;
+  border-radius: 0px;
 }
 
 * {
