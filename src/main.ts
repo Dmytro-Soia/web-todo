@@ -4,42 +4,64 @@ const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
 let json_storage: string[] = []
+let checked_box: boolean[] = []
 
-function set_ls() {
-  json_storage = JSON.parse(localStorage.getItem('ls_item:') || '[]')
-
-  if (storage)
-    for (const element of json_storage) {
-      const todo_li = document.createElement('li')
-      todo_li.innerText = element
-      todo_li.classList.add('todo-element')
-      storage.append(todo_li)
-    }
-}
-
-set_ls()
-
-function addTodo(input: HTMLInputElement) {
+// create body of todo with input text, index and checkbox
+function displayTodo(todoText: string, index: number, isChecked: boolean) {
   if (storage) {
     const todo_li = document.createElement('li')
-    todo_li.innerText = input.value
+    todo_li.innerText = todoText
     todo_li.classList.add('todo-element')
+
+    const checkbox = document.createElement('INPUT') as HTMLInputElement
+    checkbox.setAttribute('type', 'checkbox')
+    checkbox.classList.add('checkbox')
+    checkbox.checked = isChecked
+
+    checkbox.addEventListener('change', () => {
+      checked_box[index] = checkbox.checked
+      localStorage.setItem('checked', JSON.stringify(checked_box))
+    })
+
+    todo_li.appendChild(checkbox)
     storage.append(todo_li)
+    console.log(index)
   }
 }
 
-function addToStorage() {
+function set_items_into_ls() {
+  json_storage = JSON.parse(localStorage.getItem('ls_item:') || '[]')
+  checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
+
+  json_storage.forEach((todoText, index) => {
+    displayTodo(todoText, index, checked_box[index] || false)
+  })
+}
+
+set_items_into_ls()
+
+function addTodo() {
+  if (input) {
+    const newIndex = json_storage.length
+    displayTodo(input.value, newIndex, false)
+  }
+}
+
+function addTodoToStorage() {
   if (input) {
     json_storage.push(input.value)
     localStorage.setItem('ls_item:', JSON.stringify(json_storage))
+    localStorage.setItem('checked', JSON.stringify(checked_box))
+
+    console.log(json_storage)
   }
 }
 
 if (input) {
   input.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
-      addTodo(input)
-      addToStorage()
+      addTodo()
+      addTodoToStorage()
     }
   })
 }
@@ -47,8 +69,8 @@ if (input) {
 if (button) {
   button.addEventListener('click', () => {
     if (input) {
-      addTodo(input)
-      addToStorage()
+      addTodo()
+      addTodoToStorage()
     }
   })
 }
