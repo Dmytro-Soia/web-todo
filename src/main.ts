@@ -23,14 +23,28 @@ function displayTodo(todoText: string, index: number, isChecked: boolean) {
       localStorage.setItem('checked', JSON.stringify(checked_box))
     })
 
+    const deleted_button = document.createElement('button')
+    deleted_button.innerText = 'Delete'
+
+    deleted_button.addEventListener('click', () => {
+      json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
+      checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
+      json_storage.splice(index, 1)
+      checked_box.splice(index, 1)
+      localStorage.setItem('ls_item', JSON.stringify(json_storage))
+      localStorage.setItem('checked', JSON.stringify(checked_box))
+      todo_li.remove()
+    })
+
     todo_li.appendChild(checkbox)
+    todo_li.appendChild(deleted_button)
     storage.append(todo_li)
     console.log(index)
   }
 }
 
 function set_items_into_ls() {
-  json_storage = JSON.parse(localStorage.getItem('ls_item:') || '[]')
+  json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
   checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
 
   json_storage.forEach((todoText, index) => {
@@ -50,7 +64,7 @@ function addTodo() {
 function addTodoToStorage() {
   if (input) {
     json_storage.push(input.value)
-    localStorage.setItem('ls_item:', JSON.stringify(json_storage))
+    localStorage.setItem('ls_item', JSON.stringify(json_storage))
     localStorage.setItem('checked', JSON.stringify(checked_box))
 
     console.log(json_storage)
