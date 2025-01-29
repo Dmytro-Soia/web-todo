@@ -10,7 +10,12 @@ let checked_box: boolean[] = []
 let due_date: Date[] = []
 
 // create body of todo with input text, index and checkbox
-function displayTodo(todoText: string, index: number, isChecked: boolean, data: string) {
+function displayTodo(
+  todoText: string,
+  index: number,
+  isChecked: boolean,
+  data: string,
+) {
   if (storage) {
     const todo_li = document.createElement('li')
     todo_li.innerText = todoText
@@ -42,10 +47,9 @@ function displayTodo(todoText: string, index: number, isChecked: boolean, data: 
       todo_li.remove()
     })
 
-
     const add_date = document.createElement('li')
     if (data) {
-        add_date.innerText = data
+      add_date.innerText = data
     } else {
       const no_due_date = document.createElement('p')
       no_due_date.innerText = 'No due date'
@@ -53,7 +57,7 @@ function displayTodo(todoText: string, index: number, isChecked: boolean, data: 
     }
     add_date.classList.add('todo-date-element')
     localStorage.setItem('date', JSON.stringify(due_date))
-  
+
     todo_li.appendChild(checkbox)
     todo_li.appendChild(deleted_button)
     todo_li.append(add_date)
@@ -67,14 +71,19 @@ function set_items_into_ls() {
   due_date = JSON.parse(localStorage.getItem('date') || '[]')
 
   json_storage.forEach((todoText, index) => {
-    displayTodo(todoText, index, checked_box[index], due_date[index] as unknown as string)
+    displayTodo(
+      todoText,
+      index,
+      checked_box[index],
+      due_date[index] as unknown as string,
+    )
   })
 }
 
 set_items_into_ls()
 
 function addTodo() {
-  if (input && date ) {
+  if (input && date) {
     const newIndex = json_storage.length
     displayTodo(input.value, newIndex, false, date.value)
   }
