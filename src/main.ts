@@ -4,11 +4,13 @@ const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
 const delete_all = document.querySelector<HTMLButtonElement>('#delete-all')
+const date = document.querySelector<HTMLInputElement>('#todo-date')
 let json_storage: string[] = []
 let checked_box: boolean[] = []
+let due_date: Date[] = []
 
 // create body of todo with input text, index and checkbox
-function displayTodo(todoText: string, index: number, isChecked: boolean) {
+function displayTodo(todoText: string, index: number, isChecked: boolean, data: string) {
   if (storage) {
     const todo_li = document.createElement('li')
     todo_li.innerText = todoText
@@ -30,45 +32,61 @@ function displayTodo(todoText: string, index: number, isChecked: boolean) {
     deleted_button.addEventListener('click', () => {
       json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
       checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
+      due_date = JSON.parse(localStorage.getItem('date') || '[]')
       json_storage.splice(index, 1)
       checked_box.splice(index, 1)
+      due_date.splice(index, 1)
       localStorage.setItem('ls_item', JSON.stringify(json_storage))
       localStorage.setItem('checked', JSON.stringify(checked_box))
+      localStorage.setItem('date', JSON.stringify(due_date))
       todo_li.remove()
     })
 
+
+    const add_date = document.createElement('li')
+    if (data) {
+        add_date.innerText = data
+    } else {
+      const no_due_date = document.createElement('p')
+      no_due_date.innerText = 'No due date'
+      add_date.append(no_due_date)
+    }
+    add_date.classList.add('todo-date-element')
+    localStorage.setItem('date', JSON.stringify(due_date))
+  
     todo_li.appendChild(checkbox)
     todo_li.appendChild(deleted_button)
+    todo_li.append(add_date)
     storage.append(todo_li)
-    console.log(index)
   }
 }
 
 function set_items_into_ls() {
   json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
   checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
+  due_date = JSON.parse(localStorage.getItem('date') || '[]')
 
   json_storage.forEach((todoText, index) => {
-    displayTodo(todoText, index, checked_box[index] || false)
+    displayTodo(todoText, index, checked_box[index], due_date[index] as unknown as string)
   })
 }
 
 set_items_into_ls()
 
 function addTodo() {
-  if (input) {
+  if (input && date ) {
     const newIndex = json_storage.length
-    displayTodo(input.value, newIndex, false)
+    displayTodo(input.value, newIndex, false, date.value)
   }
 }
 
 function addTodoToStorage() {
-  if (input) {
+  if (input && date) {
     json_storage.push(input.value)
+    due_date.push(date.value as unknown as Date)
     localStorage.setItem('ls_item', JSON.stringify(json_storage))
     localStorage.setItem('checked', JSON.stringify(checked_box))
-
-    console.log(json_storage)
+    localStorage.setItem('date', JSON.stringify(due_date))
   }
 }
 
@@ -94,5 +112,8 @@ if (delete_all && storage) {
   delete_all.addEventListener('click', () => {
     localStorage.clear()
     storage.innerHTML = ''
+    json_storage = []
+    checked_box = []
+    due_date = []
   })
 }
