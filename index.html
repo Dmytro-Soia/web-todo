@@ -12,16 +12,18 @@
   <div id="main">
     <h1>Web todolist app</h1>
     <div id="nav">
-      <input id="todo-input">
-      <input id="todo-date" type="date">
+      <p id="todo-creation-error"></p>
+      <input  id="todo-input">
+      <input type="date" id="todo-date" >
       <button id="add-todo-button">Add Todo</button>
+      <button id="delete-all">Delete all</button>
     </div>
     <div>
       <ul id="todo-storage">
 
       </ul>
     </div>
-     <button id="delete-all">Delete all</button>
+     
   </div>
  
   <script type="module" src="/src/main.ts"></script>
