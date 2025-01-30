@@ -50,6 +50,15 @@ p {
   border-radius: 0px;
 }
 
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+  height: 40px;
+  width: 455px;
+}
+
 * {
   font-family: Helvetica, Arial, sans-serif;
 }

@@ -1,5 +1,6 @@
 import './style.css'
 
+const errorP = document.querySelector('#todo-creation-error')
 const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
@@ -48,6 +49,7 @@ function displayTodo(
     })
 
     const add_date = document.createElement('li')
+
     if (data) {
       add_date.innerText = data
     } else {
@@ -65,7 +67,7 @@ function displayTodo(
   }
 }
 
-function set_items_into_ls() {
+function get_items_from_ls() {
   json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
   checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
   due_date = JSON.parse(localStorage.getItem('date') || '[]')
@@ -80,7 +82,7 @@ function set_items_into_ls() {
   })
 }
 
-set_items_into_ls()
+get_items_from_ls()
 
 function addTodo() {
   if (input && date) {
@@ -91,6 +93,7 @@ function addTodo() {
 
 function addTodoToStorage() {
   if (input && date) {
+    // Before adding to storage, check input length and date validity
     json_storage.push(input.value)
     due_date.push(date.value as unknown as Date)
     localStorage.setItem('ls_item', JSON.stringify(json_storage))
@@ -99,11 +102,46 @@ function addTodoToStorage() {
   }
 }
 
-if (input) {
-  input.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      addTodo()
-      addTodoToStorage()
+function verifyTodoValidation() {
+  if (input && errorP && button && date) {
+    const new_date = Date.parse(date.value)
+    if (
+      input.value.length > 200 ||
+      Number.isNaN(new_date) ||
+      input.value.trim() === ''
+    ) {
+      errorP.classList.add('error')
+      errorP.innerHTML = 'VALIDATION ERROR'
+      button.disabled = true
+    } else {
+      errorP.classList.remove('error')
+      errorP.innerHTML = ''
+    }
+  }
+}
+
+verifyTodoValidation()
+
+if (input && button) {
+  input.addEventListener('input', () => {
+    if (input.value.trim() === '') {
+      button.disabled = true
+      verifyTodoValidation()
+    } else {
+      button.disabled = false
+      verifyTodoValidation()
+    }
+  })
+}
+
+if (date && button) {
+  date.addEventListener('input', () => {
+    if (date.value.trim() === '') {
+      button.disabled = true
+      verifyTodoValidation()
+    } else {
+      button.disabled = false
+      verifyTodoValidation()
     }
   })
 }
@@ -111,10 +149,32 @@ if (input) {
 if (button) {
   button.addEventListener('click', () => {
     if (input) {
+      verifyTodoValidation()
       addTodo()
       addTodoToStorage()
     }
   })
+}
+
+function checkEnter(e: KeyboardEvent) {
+  if (e.key === 'Enter' && button) {
+    if (button.disabled === false) {
+      verifyTodoValidation()
+      addTodo()
+      addTodoToStorage()
+    } else {
+      e.preventDefault()
+      button.disabled = true
+    }
+  }
+}
+
+if (input) {
+  input.addEventListener('keydown', checkEnter)
+}
+
+if (date) {
+  date.addEventListener('keydown', checkEnter)
 }
 
 if (delete_all && storage) {
