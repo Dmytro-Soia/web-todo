@@ -9,7 +9,6 @@ const date = document.querySelector<HTMLInputElement>('#todo-date')
 let json_storage: string[] = []
 let checked_box: boolean[] = []
 let due_date: Date[] = []
-
 // create body of todo with input text, index and checkbox
 function displayTodo(
   todoText: string,
@@ -51,20 +50,42 @@ function displayTodo(
     const add_date = document.createElement('li')
 
     if (data) {
+      console.log(new Date(data).getTime())
+
       add_date.innerText = data
+      // calculer la couleur
+      add_date.classList.add(getDateColor(new Date(data)))
     } else {
       const no_due_date = document.createElement('p')
       no_due_date.innerText = 'No due date'
       add_date.append(no_due_date)
     }
-    add_date.classList.add('todo-date-element')
     localStorage.setItem('date', JSON.stringify(due_date))
 
     todo_li.appendChild(checkbox)
     todo_li.appendChild(deleted_button)
     todo_li.append(add_date)
     storage.append(todo_li)
+    console.log(add_date);
+    
   }
+}
+
+const getDateColor = (date: Date): string => {
+  const currentDate = new Date()
+  currentDate.setHours(1, 0, 0, 0)
+  const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000;
+
+  if (date < currentDate) {
+    return '"red"'
+  }
+  if (date.getTime() === currentDate.getTime()) {
+    return 'blue'
+  }
+  if (date.getTime() > currentDate.setTime(currentDate.getTime() + fourDaysInMillis)) {
+    return 'green'
+  } 
+  return 'orange'
 }
 
 function get_items_from_ls() {
@@ -93,7 +114,6 @@ function addTodo() {
 
 function addTodoToStorage() {
   if (input && date) {
-    // Before adding to storage, check input length and date validity
     json_storage.push(input.value)
     due_date.push(date.value as unknown as Date)
     localStorage.setItem('ls_item', JSON.stringify(json_storage))
@@ -129,7 +149,9 @@ if (input && button) {
       verifyTodoValidation()
     } else {
       button.disabled = false
+      console.log('---')
       verifyTodoValidation()
+      console.log('---')
     }
   })
 }
