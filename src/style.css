@@ -41,6 +41,38 @@ body {
   align-items: center;
 }
 
+.red {
+  display: flex;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  color: red;
+}
+
+.green {
+  display: flex;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  color: green;
+}
+
+.orange {
+  display: flex;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  color: orange;
+}
+
+.blue {
+  display: flex;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  color: blue;
+}
+
 p {
   margin: 0px;
 }
