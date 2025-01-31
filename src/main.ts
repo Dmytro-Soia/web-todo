@@ -66,15 +66,14 @@ function displayTodo(
     todo_li.appendChild(deleted_button)
     todo_li.append(add_date)
     storage.append(todo_li)
-    console.log(add_date);
-    
+    console.log(add_date)
   }
 }
 
 const getDateColor = (date: Date): string => {
   const currentDate = new Date()
   currentDate.setHours(1, 0, 0, 0)
-  const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000;
+  const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000
 
   if (date < currentDate) {
     return '"red"'
@@ -82,9 +81,12 @@ const getDateColor = (date: Date): string => {
   if (date.getTime() === currentDate.getTime()) {
     return 'blue'
   }
-  if (date.getTime() > currentDate.setTime(currentDate.getTime() + fourDaysInMillis)) {
+  if (
+    date.getTime() >
+    currentDate.setTime(currentDate.getTime() + fourDaysInMillis)
+  ) {
     return 'green'
-  } 
+  }
   return 'orange'
 }
 
