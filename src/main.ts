@@ -1,14 +1,17 @@
 import './style.css'
 
-const errorP = document.querySelector('#todo-creation-error')
+const errorP = document.querySelector<HTMLParagraphElement>(
+  '#todo-creation-error',
+)
 const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
+const errorO = document.querySelector<HTMLParagraphElement>('#overdue-error')
 const delete_all = document.querySelector<HTMLButtonElement>('#delete-all')
 const date = document.querySelector<HTMLInputElement>('#todo-date')
 let json_storage: string[] = []
 let checked_box: boolean[] = []
-let due_date: Date[] = []
+let due_date: string[] = []
 // create body of todo with input text, index and checkbox
 function displayTodo(
   todoText: string,
@@ -35,25 +38,19 @@ function displayTodo(
     deleted_button.innerText = 'Delete'
 
     deleted_button.addEventListener('click', () => {
-      json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
-      checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
-      due_date = JSON.parse(localStorage.getItem('date') || '[]')
+      get_items_from_ls()
       json_storage.splice(index, 1)
       checked_box.splice(index, 1)
       due_date.splice(index, 1)
-      localStorage.setItem('ls_item', JSON.stringify(json_storage))
-      localStorage.setItem('checked', JSON.stringify(checked_box))
-      localStorage.setItem('date', JSON.stringify(due_date))
+      save_items_into_ls()
       todo_li.remove()
+      storage.innerHTML = ''
+      displayTodos()
+      verifyOverdueTodo()
     })
-
     const add_date = document.createElement('li')
-
     if (data) {
-      console.log(new Date(data).getTime())
-
       add_date.innerText = data
-      // calculer la couleur
       add_date.classList.add(getDateColor(new Date(data)))
     } else {
       const no_due_date = document.createElement('p')
@@ -61,12 +58,10 @@ function displayTodo(
       add_date.append(no_due_date)
     }
     localStorage.setItem('date', JSON.stringify(due_date))
-
     todo_li.appendChild(checkbox)
     todo_li.appendChild(deleted_button)
     todo_li.append(add_date)
     storage.append(todo_li)
-    console.log(add_date)
   }
 }
 
@@ -74,9 +69,10 @@ const getDateColor = (date: Date): string => {
   const currentDate = new Date()
   currentDate.setHours(1, 0, 0, 0)
   const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000
-
   if (date < currentDate) {
-    return '"red"'
+    if (errorO) {
+    }
+    return 'red'
   }
   if (date.getTime() === currentDate.getTime()) {
     return 'blue'
@@ -94,7 +90,17 @@ function get_items_from_ls() {
   json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
   checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
   due_date = JSON.parse(localStorage.getItem('date') || '[]')
+}
 
+function save_items_into_ls() {
+  localStorage.setItem('ls_item', JSON.stringify(json_storage))
+  localStorage.setItem('checked', JSON.stringify(checked_box))
+  localStorage.setItem('date', JSON.stringify(due_date))
+  verifyOverdueTodo()
+}
+
+function displayTodos() {
+  get_items_from_ls()
   json_storage.forEach((todoText, index) => {
     displayTodo(
       todoText,
@@ -105,7 +111,7 @@ function get_items_from_ls() {
   })
 }
 
-get_items_from_ls()
+displayTodos()
 
 function addTodo() {
   if (input && date) {
@@ -117,10 +123,8 @@ function addTodo() {
 function addTodoToStorage() {
   if (input && date) {
     json_storage.push(input.value)
-    due_date.push(date.value as unknown as Date)
-    localStorage.setItem('ls_item', JSON.stringify(json_storage))
-    localStorage.setItem('checked', JSON.stringify(checked_box))
-    localStorage.setItem('date', JSON.stringify(due_date))
+    due_date.push(date.value as unknown as string)
+    save_items_into_ls()
   }
 }
 
@@ -142,6 +146,21 @@ function verifyTodoValidation() {
   }
 }
 
+function verifyOverdueTodo() {
+  const currentDate = new Date().toISOString().split('T')[0]
+  if (errorO) {
+    errorO.classList.remove('error2')
+    errorO.innerHTML = ''
+    for (let i = 0; i < due_date.length; i++) {
+      if (due_date[i] < currentDate) {
+        errorO.classList.add('error2')
+        errorO.innerHTML = 'YOU HAVE OVERDUE TODO'
+      }
+    }
+  }
+}
+verifyOverdueTodo()
+
 verifyTodoValidation()
 
 if (input && button) {
@@ -149,11 +168,11 @@ if (input && button) {
     if (input.value.trim() === '') {
       button.disabled = true
       verifyTodoValidation()
+      verifyOverdueTodo()
     } else {
       button.disabled = false
-      console.log('---')
       verifyTodoValidation()
-      console.log('---')
+      verifyOverdueTodo()
     }
   })
 }
@@ -163,9 +182,11 @@ if (date && button) {
     if (date.value.trim() === '') {
       button.disabled = true
       verifyTodoValidation()
+      verifyOverdueTodo()
     } else {
       button.disabled = false
       verifyTodoValidation()
+      verifyOverdueTodo()
     }
   })
 }
@@ -174,6 +195,7 @@ if (button) {
   button.addEventListener('click', () => {
     if (input) {
       verifyTodoValidation()
+      verifyOverdueTodo()
       addTodo()
       addTodoToStorage()
     }
@@ -184,6 +206,7 @@ function checkEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && button) {
     if (button.disabled === false) {
       verifyTodoValidation()
+      verifyOverdueTodo()
       addTodo()
       addTodoToStorage()
     } else {
@@ -201,12 +224,14 @@ if (date) {
   date.addEventListener('keydown', checkEnter)
 }
 
-if (delete_all && storage) {
+if (delete_all && storage && errorO) {
   delete_all.addEventListener('click', () => {
     localStorage.clear()
     storage.innerHTML = ''
     json_storage = []
     checked_box = []
     due_date = []
+    errorO.classList.remove('error')
+    errorO.innerHTML = ''
   })
 }
