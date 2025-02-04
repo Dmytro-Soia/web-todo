@@ -230,7 +230,7 @@ if (delete_all && storage && errorO) {
     json_storage = []
     checked_box = []
     due_date = []
-    errorO.classList.remove('error')
+    errorO.classList.remove('error2')
     errorO.innerHTML = ''
   })
 }

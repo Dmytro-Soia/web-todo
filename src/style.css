@@ -12,7 +12,7 @@ body {
   align-items: center;
 }
 
-#nav #todo-input {
+#todo-input {
   text-align: center;
   border: 1px solid #b8b8b8;
   border-radius: 20px 0px 0px 20px;
@@ -120,9 +120,10 @@ p {
 }
 
 #delete-all {
-  background-color: transparent;
+  background-color: red;
   border: none;
-  color: transparent;
+  border-radius: 40px;
+  width: 80px;
 }
 
 .error {
