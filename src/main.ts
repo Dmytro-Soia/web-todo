@@ -1,12 +1,13 @@
 import './style.css'
 
-const errorP = document.querySelector<HTMLParagraphElement>(
+const errorValidation = document.querySelector<HTMLParagraphElement>(
   '#todo-creation-error',
 )
 const input = document.querySelector<HTMLInputElement>('#todo-input')
 const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
 const storage = document.querySelector<HTMLUListElement>('#todo-storage')
-const errorO = document.querySelector<HTMLParagraphElement>('#overdue-error')
+const errorOverdue =
+  document.querySelector<HTMLParagraphElement>('#overdue-error')
 const delete_all = document.querySelector<HTMLButtonElement>('#delete-all')
 const date = document.querySelector<HTMLInputElement>('#todo-date')
 let json_storage: string[] = []
@@ -69,7 +70,7 @@ const getDateColor = (date: Date): string => {
   currentDate.setHours(1, 0, 0, 0)
   const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000
   if (date < currentDate) {
-    if (errorO) {
+    if (errorOverdue) {
     }
     return 'red'
   }
@@ -128,32 +129,32 @@ function addTodoToStorage() {
 }
 
 function verifyTodoValidation() {
-  if (input && errorP && button && date) {
+  if (input && errorValidation && button && date) {
     const new_date = Date.parse(date.value)
     if (
       input.value.length > 200 ||
       Number.isNaN(new_date) ||
       input.value.trim() === ''
     ) {
-      errorP.classList.add('error')
-      errorP.innerHTML = 'VALIDATION ERROR'
+      errorValidation.classList.add('error-validation')
+      errorValidation.innerHTML = 'VALIDATION ERROR'
       button.disabled = true
     } else {
-      errorP.classList.remove('error')
-      errorP.innerHTML = ''
+      errorValidation.classList.remove('error-validation')
+      errorValidation.innerHTML = ''
     }
   }
 }
 
 function verifyOverdueTodo() {
   const currentDate = new Date().toISOString().split('T')[0]
-  if (errorO) {
-    errorO.classList.remove('error2')
-    errorO.innerHTML = ''
+  if (errorOverdue) {
+    errorOverdue.classList.remove('error-overdue')
+    errorOverdue.innerHTML = ''
     for (let i = 0; i < due_date.length; i++) {
       if (due_date[i] < currentDate) {
-        errorO.classList.add('error2')
-        errorO.innerHTML = 'YOU HAVE OVERDUE TODO'
+        errorOverdue.classList.add('error-overdue')
+        errorOverdue.innerHTML = 'YOU HAVE OVERDUE TODO'
       }
     }
   }
@@ -223,14 +224,14 @@ if (date) {
   date.addEventListener('keydown', checkEnter)
 }
 
-if (delete_all && storage && errorO) {
+if (delete_all && storage && errorOverdue) {
   delete_all.addEventListener('click', () => {
     localStorage.clear()
     storage.innerHTML = ''
     json_storage = []
     checked_box = []
     due_date = []
-    errorO.classList.remove('error2')
-    errorO.innerHTML = ''
+    errorOverdue.classList.remove('error-overdue')
+    errorOverdue.innerHTML = ''
   })
 }
