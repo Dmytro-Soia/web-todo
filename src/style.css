@@ -2,6 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  background-image: linear-gradient(to left, #00bbc9 , #064db8);
 }
 
 #main {
@@ -11,27 +12,67 @@ body {
   align-items: center;
 }
 
+#nav 
+
+#todo-input {
+  text-align: center;
+  border: 1px solid #b8b8b8;
+  border-radius: 20px 0px 0px 20px
+}
+
+#todo-date {
+  position: relative;
+  right: 4.8px;
+  border: 1px solid #b8b8b8;
+  border-radius: 0px 20px 20px 0px
+}
+
 #todo-storage {
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   overflow: hidden;
-  border: 1px solid black;
   margin: 50px 10px 0px 10px;
   height: 700px;
   width: 500px;
   padding: 0px;
-  background-color: #dad5d5;
+}
+
+#add-todo-button {
+  border: 1px solid #b8b8b8;
+  border-radius: 40px;
+  width: 77px;
+}
+
+.checkbox {
+  margin: 0px 10px 0px 10px
+}
+
+.deleted-button {
+  margin: 0px 10px 0px 10px;
+  height: 100%;
+  border: none;
+  background-image: url('trash.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 30px;
+  background-color: transparent;
+
 }
 
 .todo-element {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 98%;
+  height: 30px;
   border: 1px black solid;
   border-radius: 5px;
+  color: black;
+  margin: 5px 0px;
+  padding-left: 5px;
+  background-color: #A0D9E4;
 }
 
 .todo-date-element {
@@ -46,6 +87,7 @@ body {
   width: 20%;
   justify-content: center;
   align-items: center;
+  margin-left:  auto;
   color: red;
 }
 
@@ -54,6 +96,7 @@ body {
   width: 20%;
   justify-content: center;
   align-items: center;
+  margin-left:  auto;
   color: green;
 }
 
@@ -62,7 +105,8 @@ body {
   width: 20%;
   justify-content: center;
   align-items: center;
-  color: orange;
+  margin-left:  auto;
+  color: rgb(235, 141, 0);
 }
 
 .blue {
@@ -70,6 +114,7 @@ body {
   width: 20%;
   justify-content: center;
   align-items: center;
+  margin-left:  auto;
   color: blue;
 }
 
@@ -78,17 +123,20 @@ p {
 }
 
 #delete-all {
-  background-color: red;
-  border-radius: 0px;
+  background-color: transparent;
+  border: none;
+  color: transparent;
 }
 
 .error {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 40px;
   background-color: red;
   height: 40px;
-  width: 455px;
+  width: 245px;
+  margin: 20px 0px
 }
 
 .error2 {
@@ -97,8 +145,10 @@ p {
   align-items: center;
   background-color: red;
   color: white;
+  border-radius: 40px;
   height: 40px;
-  width: 455px;
+  width: 285px;
+  margin: 10px 0px
 }
 
 * {

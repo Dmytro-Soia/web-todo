@@ -14,6 +14,7 @@ let checked_box: boolean[] = []
 let due_date: string[] = []
 // create body of todo with input text, index and checkbox
 function displayTodo(
+
   todoText: string,
   index: number,
   isChecked: boolean,
@@ -24,18 +25,18 @@ function displayTodo(
     todo_li.innerText = todoText
     todo_li.classList.add('todo-element')
 
+
     const checkbox = document.createElement('INPUT') as HTMLInputElement
     checkbox.setAttribute('type', 'checkbox')
     checkbox.classList.add('checkbox')
     checkbox.checked = isChecked
-
     checkbox.addEventListener('change', () => {
       checked_box[index] = checkbox.checked
       localStorage.setItem('checked', JSON.stringify(checked_box))
     })
 
     const deleted_button = document.createElement('button')
-    deleted_button.innerText = 'Delete'
+    deleted_button.classList.add('deleted-button')
 
     deleted_button.addEventListener('click', () => {
       get_items_from_ls()
@@ -58,9 +59,9 @@ function displayTodo(
       add_date.append(no_due_date)
     }
     localStorage.setItem('date', JSON.stringify(due_date))
-    todo_li.appendChild(checkbox)
-    todo_li.appendChild(deleted_button)
     todo_li.append(add_date)
+    todo_li.append(checkbox)
+    todo_li.append(deleted_button)
     storage.append(todo_li)
   }
 }
