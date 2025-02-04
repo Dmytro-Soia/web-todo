@@ -14,7 +14,6 @@ let checked_box: boolean[] = []
 let due_date: string[] = []
 // create body of todo with input text, index and checkbox
 function displayTodo(
-
   todoText: string,
   index: number,
   isChecked: boolean,
@@ -24,7 +23,6 @@ function displayTodo(
     const todo_li = document.createElement('li')
     todo_li.innerText = todoText
     todo_li.classList.add('todo-element')
-
 
     const checkbox = document.createElement('INPUT') as HTMLInputElement
     checkbox.setAttribute('type', 'checkbox')
