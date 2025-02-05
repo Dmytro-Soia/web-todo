@@ -1,8 +1,8 @@
-import { todos, storage, errorOverdue } from './main'
 import { save_items_into_ls } from './add-todo-to-ls'
-import { verifyOverdueTodo } from './verification'
+import { errorOverdue, storage, todos } from './main'
 import { get_items_from_ls } from './main'
 import type { Todo } from './main'
+import { verifyOverdueTodo } from './verification'
 
 export function createTodo(todo: Todo, index: number) {
   if (storage) {

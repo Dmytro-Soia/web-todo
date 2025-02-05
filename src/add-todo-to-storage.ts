@@ -1,6 +1,6 @@
-import { input, date, todos } from './main'
-import { createTodo } from './create-todo'
 import { save_items_into_ls } from './add-todo-to-ls'
+import { createTodo } from './create-todo'
+import { date, input, todos } from './main'
 import type { Todo } from './main'
 
 export function addTodo() {

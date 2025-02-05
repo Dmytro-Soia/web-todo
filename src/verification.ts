@@ -1,4 +1,4 @@
-import { input, date, button, todos } from './main'
+import { button, date, input, todos } from './main'
 import { errorOverdue, errorValidation } from './main'
 
 export function verifyTodoValidation() {

@@ -1,7 +1,7 @@
 import './style.css'
-import { verifyOverdueTodo, verifyTodoValidation } from './verification'
-import { displayTodo } from './create-todo'
 import { addTodo } from './add-todo-to-storage'
+import { displayTodo } from './create-todo'
+import { verifyOverdueTodo, verifyTodoValidation } from './verification'
 
 export const errorValidation = document.querySelector<HTMLParagraphElement>(
   '#todo-creation-error',
