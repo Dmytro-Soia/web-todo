@@ -1,7 +1,5 @@
-import { input, date, button, due_date } from "./main"
-import { errorOverdue, errorValidation } from "./main"
-
-
+import { input, date, button, todos } from './main'
+import { errorOverdue, errorValidation } from './main'
 
 export function verifyTodoValidation() {
   if (input && errorValidation && button && date) {
@@ -26,8 +24,8 @@ export function verifyOverdueTodo() {
   if (errorOverdue) {
     errorOverdue.classList.remove('error-overdue')
     errorOverdue.innerHTML = ''
-    for (let i = 0; i < due_date.length; i++) {
-      if (due_date[i] < currentDate) {
+    for (let i = 0; i < todos.length; i++) {
+      if ((todos[i] as unknown as string) < currentDate) {
         errorOverdue.classList.add('error-overdue')
         errorOverdue.innerHTML = 'YOU HAVE OVERDUE TODO'
       }
