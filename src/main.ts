@@ -1,178 +1,52 @@
 import './style.css'
+import { get_items_from_ls } from './add-todo-to-ls'
+import { addTodo } from './add-todo-to-storage'
+import { displayTodo } from './display-todos'
+import { verifyOverdueTodo, verifyTodoValidation } from './verification'
 
-const errorValidation = document.querySelector<HTMLParagraphElement>(
+export const errorValidation = document.querySelector<HTMLParagraphElement>(
   '#todo-creation-error',
 )
-const input = document.querySelector<HTMLInputElement>('#todo-input')
-const button = document.querySelector<HTMLButtonElement>('#add-todo-button')
-const storage = document.querySelector<HTMLUListElement>('#todo-storage')
-const errorOverdue =
+export const input = document.querySelector<HTMLInputElement>('#todo-input')
+export const button =
+  document.querySelector<HTMLButtonElement>('#add-todo-button')
+export const storage = document.querySelector<HTMLUListElement>('#todo-storage')
+export const errorOverdue =
   document.querySelector<HTMLParagraphElement>('#overdue-error')
-const delete_all = document.querySelector<HTMLButtonElement>('#delete-all')
-const date = document.querySelector<HTMLInputElement>('#todo-date')
-let json_storage: string[] = []
-let checked_box: boolean[] = []
-let due_date: string[] = []
-// create body of todo with input text, index and checkbox
-function displayTodo(
-  todoText: string,
-  index: number,
-  isChecked: boolean,
-  data: string,
-) {
-  if (storage) {
-    const todo_li = document.createElement('li')
-    todo_li.innerText = todoText
-    todo_li.classList.add('todo-element')
+export const delete_all =
+  document.querySelector<HTMLButtonElement>('#delete-all')
+export const date = document.querySelector<HTMLInputElement>('#todo-date')
 
-    const checkbox = document.createElement('INPUT') as HTMLInputElement
-    checkbox.setAttribute('type', 'checkbox')
-    checkbox.classList.add('checkbox')
-    checkbox.checked = isChecked
-    checkbox.addEventListener('change', () => {
-      checked_box[index] = checkbox.checked
-      localStorage.setItem('checked', JSON.stringify(checked_box))
-    })
-
-    const deleted_button = document.createElement('button')
-    deleted_button.classList.add('deleted-button')
-
-    deleted_button.addEventListener('click', () => {
-      get_items_from_ls()
-      json_storage.splice(index, 1)
-      checked_box.splice(index, 1)
-      due_date.splice(index, 1)
-      save_items_into_ls()
-      todo_li.remove()
-      storage.innerHTML = ''
-      displayTodos()
-      verifyOverdueTodo()
-    })
-    const add_date = document.createElement('li')
-    if (data) {
-      add_date.innerText = data
-      add_date.classList.add(getDateColor(new Date(data)))
-    } else {
-      const no_due_date = document.createElement('p')
-      no_due_date.innerText = 'No due date'
-      add_date.append(no_due_date)
-    }
-    localStorage.setItem('date', JSON.stringify(due_date))
-    todo_li.append(add_date)
-    todo_li.append(checkbox)
-    todo_li.append(deleted_button)
-    storage.append(todo_li)
-  }
+export interface Todo {
+  text: string
+  checked_box: boolean
+  due_date: string
 }
 
-const getDateColor = (date: Date): string => {
-  const currentDate = new Date()
-  currentDate.setHours(1, 0, 0, 0)
-  const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000
-  if (date < currentDate) {
-    if (errorOverdue) {
-    }
-    return 'red'
-  }
-  if (date.getTime() === currentDate.getTime()) {
-    return 'blue'
-  }
-  if (
-    date.getTime() >
-    currentDate.setTime(currentDate.getTime() + fourDaysInMillis)
-  ) {
-    return 'green'
-  }
-  return 'orange'
+export let todos: Todo[] = get_items_from_ls()
+
+if (storage) {
+  displayTodo(todos, storage)
 }
 
-function get_items_from_ls() {
-  json_storage = JSON.parse(localStorage.getItem('ls_item') || '[]')
-  checked_box = JSON.parse(localStorage.getItem('checked') || '[]')
-  due_date = JSON.parse(localStorage.getItem('date') || '[]')
+verifyOverdueTodo(todos)
+
+if (input && button && date) {
+  verifyTodoValidation(input, button, date)
 }
-
-function save_items_into_ls() {
-  localStorage.setItem('ls_item', JSON.stringify(json_storage))
-  localStorage.setItem('checked', JSON.stringify(checked_box))
-  localStorage.setItem('date', JSON.stringify(due_date))
-  verifyOverdueTodo()
-}
-
-function displayTodos() {
-  get_items_from_ls()
-  json_storage.forEach((todoText, index) => {
-    displayTodo(
-      todoText,
-      index,
-      checked_box[index],
-      due_date[index] as unknown as string,
-    )
-  })
-}
-
-displayTodos()
-
-function addTodo() {
-  if (input && date) {
-    const newIndex = json_storage.length
-    displayTodo(input.value, newIndex, false, date.value)
-  }
-}
-
-function addTodoToStorage() {
-  if (input && date) {
-    json_storage.push(input.value)
-    due_date.push(date.value as unknown as string)
-    save_items_into_ls()
-  }
-}
-
-function verifyTodoValidation() {
-  if (input && errorValidation && button && date) {
-    const new_date = Date.parse(date.value)
-    if (
-      input.value.length > 200 ||
-      Number.isNaN(new_date) ||
-      input.value.trim() === ''
-    ) {
-      errorValidation.classList.add('error-validation')
-      errorValidation.innerHTML = 'VALIDATION ERROR'
-      button.disabled = true
-    } else {
-      errorValidation.classList.remove('error-validation')
-      errorValidation.innerHTML = ''
-    }
-  }
-}
-
-function verifyOverdueTodo() {
-  const currentDate = new Date().toISOString().split('T')[0]
-  if (errorOverdue) {
-    errorOverdue.classList.remove('error-overdue')
-    errorOverdue.innerHTML = ''
-    for (let i = 0; i < due_date.length; i++) {
-      if (due_date[i] < currentDate) {
-        errorOverdue.classList.add('error-overdue')
-        errorOverdue.innerHTML = 'YOU HAVE OVERDUE TODO'
-      }
-    }
-  }
-}
-verifyOverdueTodo()
-
-verifyTodoValidation()
-
 if (input && button) {
   input.addEventListener('input', () => {
     if (input.value.trim() === '') {
-      button.disabled = true
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = true
+        verifyTodoValidation(input, button, date)
+      }
     } else {
-      button.disabled = false
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = false
+        verifyTodoValidation(input, button, date)
+      }
+      verifyOverdueTodo(todos)
     }
   })
 }
@@ -180,24 +54,26 @@ if (input && button) {
 if (date && button) {
   date.addEventListener('input', () => {
     if (date.value.trim() === '') {
-      button.disabled = true
-      verifyTodoValidation()
-      verifyOverdueTodo()
-    } else {
-      button.disabled = false
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = true
+        verifyTodoValidation(input, button, date)
+      } else {
+        if (input && button && date) {
+          button.disabled = false
+          verifyTodoValidation(input, button, date)
+        }
+        verifyOverdueTodo(todos)
+      }
     }
   })
 }
 
 if (button) {
   button.addEventListener('click', () => {
-    if (input) {
-      verifyTodoValidation()
-      verifyOverdueTodo()
-      addTodo()
-      addTodoToStorage()
+    if (input && date && storage) {
+      verifyTodoValidation(input, button, date)
+      verifyOverdueTodo(todos)
+      addTodo(input, date, todos, storage)
     }
   })
 }
@@ -205,10 +81,11 @@ if (button) {
 function checkEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && button) {
     if (button.disabled === false) {
-      verifyTodoValidation()
-      verifyOverdueTodo()
-      addTodo()
-      addTodoToStorage()
+      if (input && date && storage) {
+        verifyTodoValidation(input, button, date)
+        verifyOverdueTodo(todos)
+        addTodo(input, date, todos, storage)
+      }
     } else {
       e.preventDefault()
       button.disabled = true
@@ -228,9 +105,7 @@ if (delete_all && storage && errorOverdue) {
   delete_all.addEventListener('click', () => {
     localStorage.clear()
     storage.innerHTML = ''
-    json_storage = []
-    checked_box = []
-    due_date = []
+    todos = []
     errorOverdue.classList.remove('error-overdue')
     errorOverdue.innerHTML = ''
   })
