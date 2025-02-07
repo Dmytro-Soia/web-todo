@@ -1,10 +1,15 @@
 import { save_items_into_ls } from './add-todo-to-ls'
-import { errorOverdue, storage, todos } from './main'
-import { get_items_from_ls } from './main'
+import { get_items_from_ls } from './add-todo-to-ls'
+import { displayTodo } from './display-todos'
 import type { Todo } from './main'
 import { verifyOverdueTodo } from './verification'
 
-export function createTodo(todo: Todo, index: number) {
+export function createTodo(
+  todos: Todo[],
+  todo: Todo,
+  index: number,
+  storage: HTMLUListElement,
+) {
   if (storage) {
     const todo_li = document.createElement('li')
     todo_li.innerText = todo.text
@@ -23,15 +28,13 @@ export function createTodo(todo: Todo, index: number) {
     deleted_button.classList.add('deleted-button')
 
     deleted_button.addEventListener('click', () => {
-      if (storage) {
-        get_items_from_ls()
-        todos.splice(index, 1)
-        save_items_into_ls()
-        todo_li.remove()
-        storage.innerHTML = ''
-        displayTodo()
-        verifyOverdueTodo()
-      }
+      get_items_from_ls()
+      todos.splice(index, 1)
+      todo_li.remove()
+      storage.innerHTML = ''
+      displayTodo(todos, storage)
+      save_items_into_ls(todos)
+      verifyOverdueTodo(todos)
     })
     const add_date = document.createElement('li')
     if (todo.due_date) {
@@ -46,6 +49,8 @@ export function createTodo(todo: Todo, index: number) {
     todo_li.append(checkbox)
     todo_li.append(deleted_button)
     storage.append(todo_li)
+
+    console.log(todo.due_date)
   }
 }
 
@@ -54,8 +59,6 @@ export const getDateColor = (date: Date): string => {
   currentDate.setHours(1, 0, 0, 0)
   const fourDaysInMillis = 4 * 24 * 60 * 60 * 1000
   if (date < currentDate) {
-    if (errorOverdue) {
-    }
     return 'red'
   }
   if (date.getTime() === currentDate.getTime()) {
@@ -68,11 +71,4 @@ export const getDateColor = (date: Date): string => {
     return 'green'
   }
   return 'orange'
-}
-
-export function displayTodo() {
-  get_items_from_ls()
-  todos.forEach((todos, index) => {
-    createTodo(todos, index)
-  })
 }

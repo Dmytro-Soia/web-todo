@@ -1,6 +1,7 @@
 import './style.css'
+import { get_items_from_ls } from './add-todo-to-ls'
 import { addTodo } from './add-todo-to-storage'
-import { displayTodo } from './create-todo'
+import { displayTodo } from './display-todos'
 import { verifyOverdueTodo, verifyTodoValidation } from './verification'
 
 export const errorValidation = document.querySelector<HTMLParagraphElement>(
@@ -22,28 +23,30 @@ export interface Todo {
   due_date: string
 }
 
-export let todos: Todo[] = []
+export let todos: Todo[] = get_items_from_ls()
 
-export function get_items_from_ls() {
-  todos = JSON.parse(localStorage.getItem('todos') || '[]')
+if (storage) {
+  displayTodo(todos, storage)
 }
 
-displayTodo()
+verifyOverdueTodo(todos)
 
-verifyOverdueTodo()
-
-verifyTodoValidation()
-
+if (input && button && date) {
+  verifyTodoValidation(input, button, date)
+}
 if (input && button) {
   input.addEventListener('input', () => {
     if (input.value.trim() === '') {
-      button.disabled = true
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = true
+        verifyTodoValidation(input, button, date)
+      }
     } else {
-      button.disabled = false
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = false
+        verifyTodoValidation(input, button, date)
+      }
+      verifyOverdueTodo(todos)
     }
   })
 }
@@ -51,23 +54,26 @@ if (input && button) {
 if (date && button) {
   date.addEventListener('input', () => {
     if (date.value.trim() === '') {
-      button.disabled = true
-      verifyTodoValidation()
-      verifyOverdueTodo()
-    } else {
-      button.disabled = false
-      verifyTodoValidation()
-      verifyOverdueTodo()
+      if (input && button && date) {
+        button.disabled = true
+        verifyTodoValidation(input, button, date)
+      } else {
+        if (input && button && date) {
+          button.disabled = false
+          verifyTodoValidation(input, button, date)
+        }
+        verifyOverdueTodo(todos)
+      }
     }
   })
 }
 
 if (button) {
   button.addEventListener('click', () => {
-    if (input) {
-      verifyTodoValidation()
-      verifyOverdueTodo()
-      addTodo()
+    if (input && date && storage) {
+      verifyTodoValidation(input, button, date)
+      verifyOverdueTodo(todos)
+      addTodo(input, date, todos, storage)
     }
   })
 }
@@ -75,9 +81,11 @@ if (button) {
 function checkEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && button) {
     if (button.disabled === false) {
-      verifyTodoValidation()
-      verifyOverdueTodo()
-      addTodo()
+      if (input && date && storage) {
+        verifyTodoValidation(input, button, date)
+        verifyOverdueTodo(todos)
+        addTodo(input, date, todos, storage)
+      }
     } else {
       e.preventDefault()
       button.disabled = true
