@@ -27,7 +27,6 @@ export function verifyTodoValidation(
 export function verifyOverdueTodo(todos: Todo[]) {
   const currentDate = new Date().toISOString().split('T')[0]
   if (errorOverdue) {
-    console.log(currentDate)
     errorOverdue.classList.remove('error-overdue')
     errorOverdue.innerHTML = ''
     for (let i = 0; i < todos.length; i++) {
