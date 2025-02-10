@@ -1,11 +1,25 @@
+import { get_categories_from_api } from './categories/add-categories-to-api'
+import { addCategories } from './categories/add-categories-to-storage'
+import { displayCategories } from './categories/display-categories'
 import './style.css'
 import {
   delete_all_items_from_api,
   get_items_from_api,
-} from './add-todo-to-api'
-import { addTodo } from './add-todo-to-storage'
-import { displayTodo } from './display-todos'
-import { verifyOverdueTodo, verifyTodoValidation } from './verification'
+} from './todos/add-todo-to-api'
+import { addTodo } from './todos/add-todo-to-storage'
+import { displayTodo } from './todos/display-todos'
+import { verifyOverdueTodo, verifyTodoValidation } from './todos/verification'
+
+export const categoriesInput =
+  document.querySelector<HTMLInputElement>('#categories-input')
+export const categoriesColor =
+  document.querySelector<HTMLInputElement>('#categories-color')
+export const categoriesButton = document.querySelector<HTMLButtonElement>(
+  '#add-categories-button',
+)
+export const categoriesStorage = document.querySelector<HTMLUListElement>(
+  '#categories-storage',
+)
 
 export const errorValidation = document.querySelector<HTMLParagraphElement>(
   '#todo-creation-error',
@@ -28,11 +42,22 @@ export interface Todo {
   done: boolean
 }
 
+export interface Categories {
+  id: string
+  title: string
+  color: string
+}
+
 export let todos: Todo[] = await get_items_from_api()
-console.log(await get_items_from_api())
+
+export const categories: Categories[] = await get_categories_from_api()
 
 if (storage) {
   displayTodo(todos, storage)
+}
+
+if (categoriesStorage && categoriesColor) {
+  displayCategories(categories, categoriesColor, categoriesStorage)
 }
 
 verifyOverdueTodo(todos)
@@ -84,6 +109,19 @@ if (button) {
   })
 }
 
+if (categoriesButton) {
+  categoriesButton.addEventListener('click', () => {
+    if (categoriesInput && categoriesColor && categoriesStorage) {
+      addCategories(
+        categoriesInput,
+        categoriesColor,
+        categories,
+        categoriesStorage,
+      )
+    }
+  })
+}
+
 function checkEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && button) {
     if (button.disabled === false) {
@@ -99,11 +137,8 @@ function checkEnter(e: KeyboardEvent) {
   }
 }
 
-if (input) {
+if (input && date) {
   input.addEventListener('keydown', checkEnter)
-}
-
-if (date) {
   date.addEventListener('keydown', checkEnter)
 }
 

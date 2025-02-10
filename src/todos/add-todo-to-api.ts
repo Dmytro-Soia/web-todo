@@ -1,4 +1,4 @@
-import type { Todo } from './main'
+import type { Todo } from '../main'
 
 export async function save_items_into_api(
   title: string,

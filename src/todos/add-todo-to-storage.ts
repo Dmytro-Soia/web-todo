@@ -1,6 +1,6 @@
+import type { Todo } from '../main'
 import { save_items_into_api } from './add-todo-to-api'
 import { createTodo } from './create-todo'
-import type { Todo } from './main'
 
 export function addTodo(
   input: HTMLInputElement,

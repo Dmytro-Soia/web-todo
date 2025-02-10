@@ -9,28 +9,46 @@
 </head>
 
 <body>
-  <div id="main">
-    <h1>To-Do List</h1>
-    <div id="validation_error">
-      <p id="todo-creation-error"></p>
-    </div>
-    <div id="nav">
-      <input placeholder="Add new todo..." id="todo-input">
-      <input type="date" id="todo-date" >
-      <button id="add-todo-button">Add Todo</button>
-      
-    </div>
-    <div id="overdue_error">
-      <p id="overdue-error"></p>
-    </div>
-    <div>
-      <ul id="todo-storage">
 
-      </ul>
+  <div id="categories">
+    <div class="main">
+      <h1>Categories</h1>
+      <div id="categories-nav">
+        <input placeholder="Add new category..." id="categories-input">
+        <input type="color" id="categories-color">
+        <button id="add-categories-button">Add Category</button>
+      </div>
+      <div>
+        <ul id="categories-storage">
+        </ul>
+      </div>
     </div>
-    <button id="delete-all">Delete all</button>
   </div>
+
+  <div id="todos">
+    <div class="main">
+      <h1>To-Do Lst</h1>
+      <div id="validation_error">
+        <p id="todo-creation-error"></p>
+      </div>
+      <div id="nav">
+        <input placeholder="Add new todo..." id="todo-input">
+        <input type="date" id="todo-date">
+        <button id="add-todo-button">Add Todo</button>
+      </div>
+      <div id="overdue_error">
+        <p id="overdue-error"></p>
+      </div>
+      <div>
+        <ul id="todo-storage">
+        </ul>
+      </div>
+      <button id="delete-all">Delete all</button>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
+
 </body>
 
 </html>

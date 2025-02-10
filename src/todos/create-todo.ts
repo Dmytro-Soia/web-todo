@@ -1,6 +1,6 @@
+import type { Todo } from '../main'
 import { delete_items_from_api, patch_items_from_api } from './add-todo-to-api'
 import { displayTodo } from './display-todos'
-import type { Todo } from './main'
 import { verifyOverdueTodo } from './verification'
 
 export function createTodo(
@@ -46,6 +46,8 @@ export function createTodo(
     todo_li.append(checkbox)
     todo_li.append(deleted_button)
     storage.append(todo_li)
+
+    console.log(index)
   }
 }
 

@@ -1,11 +1,69 @@
 html,
 body {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   padding: 0;
   margin: 0;
   background-image: linear-gradient(to left, #00bbc9, #064db8);
 }
 
-#main {
+#categories {
+  display: flex;
+  width: 40%;
+  justify-content: center;
+  align-items: center;
+}
+
+#categories-input {
+  height: 20px;
+  border-radius: 6px;
+  padding-left: 10px;
+}
+
+#categories-color {
+  position: relative;
+  top: 2.5px;
+  height: 22px;
+}
+
+#add-categories-button {
+  border-radius: 6px;
+  position: relative;
+  top: 0.5px;
+}
+
+#categories-storage {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  overflow: hidden;
+  margin: 50px 10px 0px 10px;
+  height: 650px;
+  width: 400px;
+  padding: 0px;
+}
+
+.delete_categories_button {
+  margin: 0px 10px 0px auto;
+  height: 100%;
+  border: none;
+  background-image: url("trash.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 30px;
+  background-color: transparent;
+}
+
+#todos {
+  display: flex;
+  width: 60%;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,7 +90,7 @@ body {
   align-items: center;
   overflow: hidden;
   margin: 50px 10px 0px 10px;
-  height: 700px;
+  height: 650px;
   width: 500px;
   padding: 0px;
 }
@@ -56,6 +114,20 @@ body {
   background-position: center;
   width: 30px;
   background-color: transparent;
+}
+
+.categories-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 30px;
+  border: 1px black solid;
+  border-radius: 5px;
+  color: black;
+  margin: 5px 0px;
+  padding-left: 10px;
+  background-color: #1d7ab8;
 }
 
 .todo-element {
