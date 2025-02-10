@@ -1,5 +1,8 @@
 import './style.css'
-import { get_items_from_ls } from './add-todo-to-ls'
+import {
+  delete_all_items_from_api,
+  get_items_from_api,
+} from './add-todo-to-api'
 import { addTodo } from './add-todo-to-storage'
 import { displayTodo } from './display-todos'
 import { verifyOverdueTodo, verifyTodoValidation } from './verification'
@@ -18,12 +21,15 @@ export const delete_all =
 export const date = document.querySelector<HTMLInputElement>('#todo-date')
 
 export interface Todo {
-  text: string
-  checked_box: boolean
+  id: string
+  title: string
+  content: string
   due_date: string
+  done: boolean
 }
 
-export let todos: Todo[] = get_items_from_ls()
+export let todos: Todo[] = await get_items_from_api()
+console.log(await get_items_from_api())
 
 if (storage) {
   displayTodo(todos, storage)
@@ -103,7 +109,7 @@ if (date) {
 
 if (delete_all && storage && errorOverdue) {
   delete_all.addEventListener('click', () => {
-    localStorage.clear()
+    delete_all_items_from_api()
     storage.innerHTML = ''
     todos = []
     errorOverdue.classList.remove('error-overdue')

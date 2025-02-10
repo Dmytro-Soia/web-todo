@@ -1,45 +1,42 @@
-import { save_items_into_ls } from './add-todo-to-ls'
-import { get_items_from_ls } from './add-todo-to-ls'
+import { delete_items_from_api, patch_items_from_api } from './add-todo-to-api'
 import { displayTodo } from './display-todos'
 import type { Todo } from './main'
 import { verifyOverdueTodo } from './verification'
 
 export function createTodo(
   todos: Todo[],
-  todo: Todo,
+  newTodo: Todo,
   index: number,
   storage: HTMLUListElement,
 ) {
   if (storage) {
     const todo_li = document.createElement('li')
-    todo_li.innerText = todo.text
+    todo_li.innerText = newTodo.title
     todo_li.classList.add('todo-element')
 
     const checkbox = document.createElement('INPUT') as HTMLInputElement
     checkbox.setAttribute('type', 'checkbox')
     checkbox.classList.add('checkbox')
-    checkbox.checked = todo.checked_box
+    checkbox.checked = newTodo.done
     checkbox.addEventListener('change', () => {
-      todos[index].checked_box = checkbox.checked
-      localStorage.setItem('todos', JSON.stringify(todos))
+      todos[index].done = checkbox.checked
+      patch_items_from_api(todos, index, checkbox.checked)
     })
-
     const deleted_button = document.createElement('button')
     deleted_button.classList.add('deleted-button')
 
     deleted_button.addEventListener('click', () => {
-      get_items_from_ls()
+      delete_items_from_api(todos, index)
       todos.splice(index, 1)
       todo_li.remove()
       storage.innerHTML = ''
       displayTodo(todos, storage)
-      save_items_into_ls(todos)
       verifyOverdueTodo(todos)
     })
     const add_date = document.createElement('li')
-    if (todo.due_date) {
-      add_date.innerText = todo.due_date
-      add_date.classList.add(getDateColor(new Date(todo.due_date)))
+    if (newTodo.due_date) {
+      add_date.innerText = newTodo.due_date
+      add_date.classList.add(getDateColor(new Date(newTodo.due_date)))
     } else {
       const no_due_date = document.createElement('p')
       no_due_date.innerText = 'No due date'
@@ -49,8 +46,6 @@ export function createTodo(
     todo_li.append(checkbox)
     todo_li.append(deleted_button)
     storage.append(todo_li)
-
-    console.log(todo.due_date)
   }
 }
 
