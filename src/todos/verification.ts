@@ -1,6 +1,6 @@
-import type { Todo } from './main'
+import type { Todo } from '../main'
 
-import { errorOverdue, errorValidation } from './main'
+import { errorOverdue, errorValidation } from '../main'
 
 export function verifyTodoValidation(
   input: HTMLInputElement,

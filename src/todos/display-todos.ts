@@ -1,6 +1,6 @@
+import type { Todo } from '../main'
 import { get_items_from_api } from './add-todo-to-api'
 import { createTodo } from './create-todo'
-import type { Todo } from './main'
 
 export function displayTodo(todos: Todo[], storage: HTMLUListElement) {
   get_items_from_api()
