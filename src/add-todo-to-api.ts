@@ -16,8 +16,7 @@ export async function save_items_into_api(
       'Content-Type': 'application/json',
     },
   })
-  if (fetchPost.ok) {
-  }
+  return fetchPost
 }
 
 export async function get_items_from_api() {
@@ -35,8 +34,7 @@ export async function delete_all_items_from_api() {
       'Content-type': 'application/json',
     },
   })
-  if (fetchDeleteAll.ok) {
-  }
+  return fetchDeleteAll
 }
 
 export async function delete_items_from_api(todos: Todo[], index: number) {
@@ -50,8 +48,7 @@ export async function delete_items_from_api(todos: Todo[], index: number) {
       body: null,
     },
   )
-  if (fetchDelete.ok) {
-  }
+  return fetchDelete
 }
 
 export async function patch_items_from_api(
@@ -71,6 +68,5 @@ export async function patch_items_from_api(
       }),
     },
   )
-  if (fetchPatch.ok) {
-  }
+  return fetchPatch
 }
