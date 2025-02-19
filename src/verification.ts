@@ -19,6 +19,7 @@ export function verifyTodoValidation(
     } else {
       errorValidation.classList.remove('error-validation')
       errorValidation.innerHTML = ''
+      button.disabled = false
       return true
     }
   }

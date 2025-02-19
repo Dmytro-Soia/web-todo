@@ -55,11 +55,16 @@ export interface Categories_with_Todos {
   todo_id: string
 }
 
-export const categories: Categories[] = await get_categories_from_api()
+export let categories: Categories[] = []
+export let todos: Todo[] = []
+export let cat_with_todos: Categories_with_Todos[] = [];
 
-export let todos: Todo[] = await get_items_from_api()
+(async () => {
+categories = await get_categories_from_api()
 
-export const cat_with_todos: Categories_with_Todos[] = await get_cwt_from_api()
+todos = await get_items_from_api()
+
+cat_with_todos = await get_cwt_from_api()
 
 if (categoriesColor && categoriesStorage) {
   displayCategories(categories, categoriesColor, categoriesStorage)
@@ -119,9 +124,9 @@ if (button) {
 }
 
 if (categoriesButton) {
-  categoriesButton.addEventListener('click', () => {
+  categoriesButton.addEventListener('click', async () => {
     if (categoriesInput && categoriesColor && categoriesStorage && container) {
-      addCategories(categoriesInput, categoriesColor, categoriesStorage)
+      await addCategories(categoriesInput, categoriesColor, categoriesStorage)
       displayTodo(todos, container, categories)
     }
   })
@@ -163,3 +168,4 @@ if (delete_all && container && errorOverdue) {
     errorOverdue.innerHTML = ''
   })
 }
+})()
