@@ -2,26 +2,32 @@ import type { Categories } from '../main'
 
 export async function save_categories_into_api(title: string, color: string) {
   const fetchPostCategories = await fetch(
-    'https://api.todos.in.jt-lab.ch/categories',
+    'https://api.todos.in.jt-lab.ch/categories?order=id.asc',
     {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.pgrst.object+json',
+        Prefer: 'return=representation',
+      },
       body: JSON.stringify({
         title: title,
         color: color,
       }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
     },
   )
-  return fetchPostCategories
+  return await fetchPostCategories.json()
 }
 
 export async function get_categories_from_api() {
   const fetchGetCategories = await fetch(
-    'https://api.todos.in.jt-lab.ch/categories',
+    'https://api.todos.in.jt-lab.ch/categories?order=id.asc',
     {
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+      },
     },
   )
   const respons = await fetchGetCategories.json()
@@ -39,7 +45,6 @@ export async function delete_categories_from_api(
       headers: {
         'Content-type': 'application/json',
       },
-      body: null,
     },
   )
   return fetchDeleteCategories

@@ -1,11 +1,10 @@
-import type { Todo } from '../main'
-
-import { errorOverdue, errorValidation } from '../main'
+import type { Todo } from './main'
 
 export function verifyTodoValidation(
   input: HTMLInputElement,
   button: HTMLButtonElement,
   date: HTMLInputElement,
+  errorValidation: HTMLParagraphElement,
 ) {
   if (input && errorValidation && button && date) {
     const new_date = Date.parse(date.value)
@@ -20,13 +19,18 @@ export function verifyTodoValidation(
     } else {
       errorValidation.classList.remove('error-validation')
       errorValidation.innerHTML = ''
+      return true
     }
   }
 }
 
-export function verifyOverdueTodo(todos: Todo[]) {
+export function verifyOverdueTodo(
+  todos: Todo[],
+  errorOverdue: HTMLParagraphElement,
+  container: HTMLUListElement,
+) {
   const currentDate = new Date().toISOString().split('T')[0]
-  if (errorOverdue) {
+  if (errorOverdue && container) {
     errorOverdue.classList.remove('error-overdue')
     errorOverdue.innerHTML = ''
     for (let i = 0; i < todos.length; i++) {

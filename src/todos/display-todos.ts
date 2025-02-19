@@ -1,12 +1,15 @@
-import type { Todo } from '../main'
-import { get_items_from_api } from './add-todo-to-api'
+import { type Categories, type Todo, errorOverdue } from '../main'
 import { createTodo } from './create-todo'
 
-export function displayTodo(todos: Todo[], storage: HTMLUListElement) {
-  get_items_from_api()
-  todos.forEach((todo, index) => {
-    if (storage) {
-      createTodo(todos, todo, index, storage)
+export async function displayTodo(
+  todos: Todo[],
+  container: HTMLUListElement,
+  categories: Categories[],
+) {
+  container.innerHTML = ''
+  todos.forEach((todo: Todo, index: number) => {
+    if (container && errorOverdue) {
+      createTodo(categories, todos, todo, index, container, errorOverdue)
     }
   })
 }
