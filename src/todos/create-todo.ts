@@ -32,7 +32,7 @@ export async function createTodo(
       option.innerHTML = categories[i].title
       select.appendChild(option)
     }
-  
+
     select.addEventListener('change', async () => {
       changeCategoryForTodos(select.value, newTodo.id)
     })

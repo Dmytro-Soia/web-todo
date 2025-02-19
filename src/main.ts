@@ -57,84 +57,57 @@ export interface Categories_with_Todos {
 
 export let categories: Categories[] = []
 export let todos: Todo[] = []
-export let cat_with_todos: Categories_with_Todos[] = [];
+export let cat_with_todos: Categories_with_Todos[] = []
 
-(async () => {
-categories = await get_categories_from_api()
+;(async () => {
+  categories = await get_categories_from_api()
 
-todos = await get_items_from_api()
+  todos = await get_items_from_api()
 
-cat_with_todos = await get_cwt_from_api()
+  cat_with_todos = await get_cwt_from_api()
 
-if (categoriesColor && categoriesStorage) {
-  displayCategories(categories, categoriesColor, categoriesStorage)
-}
+  if (categoriesColor && categoriesStorage) {
+    displayCategories(categories, categoriesColor, categoriesStorage)
+  }
 
-if (container && errorOverdue) {
-  displayTodo(todos, container, categories)
-  verifyOverdueTodo(todos, errorOverdue, container)
-}
+  if (container && errorOverdue) {
+    displayTodo(todos, container, categories)
+    verifyOverdueTodo(todos, errorOverdue, container)
+  }
 
-if (input && button && date && errorValidation) {
-  verifyTodoValidation(input, button, date, errorValidation)
-}
-if (input && button) {
-  input.addEventListener('input', () => {
-    if (input.value.trim() === '') {
-      if (input && button && date && errorValidation) {
-        button.disabled = true
-        verifyTodoValidation(input, button, date, errorValidation)
-      }
-    } else if (errorOverdue && container) {
-      if (input && button && date && errorValidation) {
-        button.disabled = false
-        verifyTodoValidation(input, button, date, errorValidation)
-      }
-      verifyOverdueTodo(todos, errorOverdue, container)
-    }
-  })
-}
-
-if (date && button) {
-  date.addEventListener('input', () => {
-    if (errorOverdue && container) {
-      if (input && button && date && errorValidation) {
-        verifyTodoValidation(input, button, date, errorValidation)
-      }
-      verifyOverdueTodo(todos, errorOverdue, container)
-    }
-  })
-}
-
-if (button) {
-  button.addEventListener('click', async () => {
-    if (input && date && container && errorOverdue && errorValidation) {
-      const verifying = verifyTodoValidation(
-        input,
-        button,
-        date,
-        errorValidation,
-      )
-      if (verifying === true) {
-        await addTodo(input, date, todos, container)
+  if (input && button && date && errorValidation) {
+    verifyTodoValidation(input, button, date, errorValidation)
+  }
+  if (input && button) {
+    input.addEventListener('input', () => {
+      if (input.value.trim() === '') {
+        if (input && button && date && errorValidation) {
+          button.disabled = true
+          verifyTodoValidation(input, button, date, errorValidation)
+        }
+      } else if (errorOverdue && container) {
+        if (input && button && date && errorValidation) {
+          button.disabled = false
+          verifyTodoValidation(input, button, date, errorValidation)
+        }
         verifyOverdueTodo(todos, errorOverdue, container)
       }
-    }
-  })
-}
+    })
+  }
 
-if (categoriesButton) {
-  categoriesButton.addEventListener('click', async () => {
-    if (categoriesInput && categoriesColor && categoriesStorage && container) {
-      await addCategories(categoriesInput, categoriesColor, categoriesStorage)
-      displayTodo(todos, container, categories)
-    }
-  })
-}
+  if (date && button) {
+    date.addEventListener('input', () => {
+      if (errorOverdue && container) {
+        if (input && button && date && errorValidation) {
+          verifyTodoValidation(input, button, date, errorValidation)
+        }
+        verifyOverdueTodo(todos, errorOverdue, container)
+      }
+    })
+  }
 
-async function checkEnter(e: KeyboardEvent) {
-  if (e.key === 'Enter' && button) {
-    if (button.disabled === false) {
+  if (button) {
+    button.addEventListener('click', async () => {
       if (input && date && container && errorOverdue && errorValidation) {
         const verifying = verifyTodoValidation(
           input,
@@ -145,27 +118,59 @@ async function checkEnter(e: KeyboardEvent) {
         if (verifying === true) {
           await addTodo(input, date, todos, container)
           verifyOverdueTodo(todos, errorOverdue, container)
-        } else {
-          e.preventDefault()
-          button.disabled = true
+        }
+      }
+    })
+  }
+
+  if (categoriesButton) {
+    categoriesButton.addEventListener('click', async () => {
+      if (
+        categoriesInput &&
+        categoriesColor &&
+        categoriesStorage &&
+        container
+      ) {
+        await addCategories(categoriesInput, categoriesColor, categoriesStorage)
+        displayTodo(todos, container, categories)
+      }
+    })
+  }
+
+  async function checkEnter(e: KeyboardEvent) {
+    if (e.key === 'Enter' && button) {
+      if (button.disabled === false) {
+        if (input && date && container && errorOverdue && errorValidation) {
+          const verifying = verifyTodoValidation(
+            input,
+            button,
+            date,
+            errorValidation,
+          )
+          if (verifying === true) {
+            await addTodo(input, date, todos, container)
+            verifyOverdueTodo(todos, errorOverdue, container)
+          } else {
+            e.preventDefault()
+            button.disabled = true
+          }
         }
       }
     }
   }
-}
 
-if (input && date) {
-  input.addEventListener('keydown', checkEnter)
-  date.addEventListener('keydown', checkEnter)
-}
+  if (input && date) {
+    input.addEventListener('keydown', checkEnter)
+    date.addEventListener('keydown', checkEnter)
+  }
 
-if (delete_all && container && errorOverdue) {
-  delete_all.addEventListener('click', () => {
-    delete_all_items_from_api()
-    container.innerHTML = ''
-    todos = []
-    errorOverdue.classList.remove('error-overdue')
-    errorOverdue.innerHTML = ''
-  })
-}
+  if (delete_all && container && errorOverdue) {
+    delete_all.addEventListener('click', () => {
+      delete_all_items_from_api()
+      container.innerHTML = ''
+      todos = []
+      errorOverdue.classList.remove('error-overdue')
+      errorOverdue.innerHTML = ''
+    })
+  }
 })()
