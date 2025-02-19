@@ -58,7 +58,6 @@ export interface Categories_with_Todos {
 export let categories: Categories[] = []
 export let todos: Todo[] = []
 export let cat_with_todos: Categories_with_Todos[] = []
-
 ;(async () => {
   categories = await get_categories_from_api()
 
