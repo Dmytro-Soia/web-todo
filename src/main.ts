@@ -1,14 +1,15 @@
 import { get_categories_from_api } from './categories/add-categories-to-api'
-import { addCategories } from './categories/add-categories-to-storage'
+import { addCategories } from './categories/add-categories-to-container'
 import { displayCategories } from './categories/display-categories'
+import { get_cwt_from_api } from './categories_with_todos/add_cwt_to_api'
 import './style.css'
 import {
   delete_all_items_from_api,
   get_items_from_api,
 } from './todos/add-todo-to-api'
-import { addTodo } from './todos/add-todo-to-storage'
+import { addTodo } from './todos/add-todo-to-container'
 import { displayTodo } from './todos/display-todos'
-import { verifyOverdueTodo, verifyTodoValidation } from './todos/verification'
+import { verifyOverdueTodo, verifyTodoValidation } from './verification'
 
 export const categoriesInput =
   document.querySelector<HTMLInputElement>('#categories-input')
@@ -27,7 +28,8 @@ export const errorValidation = document.querySelector<HTMLParagraphElement>(
 export const input = document.querySelector<HTMLInputElement>('#todo-input')
 export const button =
   document.querySelector<HTMLButtonElement>('#add-todo-button')
-export const storage = document.querySelector<HTMLUListElement>('#todo-storage')
+export const container =
+  document.querySelector<HTMLUListElement>('#todo-storage')
 export const errorOverdue =
   document.querySelector<HTMLParagraphElement>('#overdue-error')
 export const delete_all =
@@ -48,91 +50,101 @@ export interface Categories {
   color: string
 }
 
-export let todos: Todo[] = await get_items_from_api()
+export interface Categories_with_Todos {
+  category_id: string
+  todo_id: string
+}
 
 export const categories: Categories[] = await get_categories_from_api()
 
-if (storage) {
-  displayTodo(todos, storage)
-}
+export let todos: Todo[] = await get_items_from_api()
 
-if (categoriesStorage && categoriesColor) {
+export const cat_with_todos: Categories_with_Todos[] = await get_cwt_from_api()
+
+if (categoriesColor && categoriesStorage) {
   displayCategories(categories, categoriesColor, categoriesStorage)
 }
 
-verifyOverdueTodo(todos)
+if (container && errorOverdue) {
+  displayTodo(todos, container, categories)
+  verifyOverdueTodo(todos, errorOverdue, container)
+}
 
-if (input && button && date) {
-  verifyTodoValidation(input, button, date)
+if (input && button && date && errorValidation) {
+  verifyTodoValidation(input, button, date, errorValidation)
 }
 if (input && button) {
   input.addEventListener('input', () => {
     if (input.value.trim() === '') {
-      if (input && button && date) {
+      if (input && button && date && errorValidation) {
         button.disabled = true
-        verifyTodoValidation(input, button, date)
+        verifyTodoValidation(input, button, date, errorValidation)
       }
-    } else {
-      if (input && button && date) {
+    } else if (errorOverdue && container) {
+      if (input && button && date && errorValidation) {
         button.disabled = false
-        verifyTodoValidation(input, button, date)
+        verifyTodoValidation(input, button, date, errorValidation)
       }
-      verifyOverdueTodo(todos)
+      verifyOverdueTodo(todos, errorOverdue, container)
     }
   })
 }
 
 if (date && button) {
   date.addEventListener('input', () => {
-    if (date.value.trim() === '') {
-      if (input && button && date) {
-        button.disabled = true
-        verifyTodoValidation(input, button, date)
-      } else {
-        if (input && button && date) {
-          button.disabled = false
-          verifyTodoValidation(input, button, date)
-        }
-        verifyOverdueTodo(todos)
+    if (errorOverdue && container) {
+      if (input && button && date && errorValidation) {
+        verifyTodoValidation(input, button, date, errorValidation)
       }
+      verifyOverdueTodo(todos, errorOverdue, container)
     }
   })
 }
 
 if (button) {
-  button.addEventListener('click', () => {
-    if (input && date && storage) {
-      verifyTodoValidation(input, button, date)
-      verifyOverdueTodo(todos)
-      addTodo(input, date, todos, storage)
+  button.addEventListener('click', async () => {
+    if (input && date && container && errorOverdue && errorValidation) {
+      const verifying = verifyTodoValidation(
+        input,
+        button,
+        date,
+        errorValidation,
+      )
+      if (verifying === true) {
+        await addTodo(input, date, todos, container)
+        verifyOverdueTodo(todos, errorOverdue, container)
+      }
     }
   })
 }
 
 if (categoriesButton) {
   categoriesButton.addEventListener('click', () => {
-    if (categoriesInput && categoriesColor && categoriesStorage) {
-      addCategories(
-        categoriesInput,
-        categoriesColor,
-        categories,
-        categoriesStorage,
-      )
+    if (categoriesInput && categoriesColor && categoriesStorage && container) {
+      addCategories(categoriesInput, categoriesColor, categoriesStorage)
+      displayTodo(todos, container, categories)
     }
   })
 }
 
-function checkEnter(e: KeyboardEvent) {
+async function checkEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && button) {
     if (button.disabled === false) {
-      if (input && date && storage) {
-        verifyTodoValidation(input, button, date)
-        verifyOverdueTodo(todos)
-        addTodo(input, date, todos, storage)
+      if (input && date && container && errorOverdue && errorValidation) {
+        const verifying = verifyTodoValidation(
+          input,
+          button,
+          date,
+          errorValidation,
+        )
+        if (verifying === true) {
+          await addTodo(input, date, todos, container)
+          verifyOverdueTodo(todos, errorOverdue, container)
+        } else {
+          e.preventDefault()
+          button.disabled = true
+        }
       }
-    } else {
-      e.preventDefault()
-      button.disabled = true
     }
   }
 }
@@ -142,10 +154,10 @@ if (input && date) {
   date.addEventListener('keydown', checkEnter)
 }
 
-if (delete_all && storage && errorOverdue) {
+if (delete_all && container && errorOverdue) {
   delete_all.addEventListener('click', () => {
     delete_all_items_from_api()
-    storage.innerHTML = ''
+    container.innerHTML = ''
     todos = []
     errorOverdue.classList.remove('error-overdue')
     errorOverdue.innerHTML = ''

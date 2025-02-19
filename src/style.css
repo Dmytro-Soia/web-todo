@@ -151,6 +151,13 @@ body {
   align-items: center;
 }
 
+.no_due_date_error {
+  display: flex;
+  width: 20%;
+  margin-right: 10px;
+  margin-left: auto;
+}
+
 .red {
   display: flex;
   width: 20%;

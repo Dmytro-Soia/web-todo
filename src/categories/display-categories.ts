@@ -1,5 +1,4 @@
 import type { Categories } from '../main'
-import { get_categories_from_api } from './add-categories-to-api'
 import { createCategories } from './create-categories'
 
 export function displayCategories(
@@ -7,7 +6,7 @@ export function displayCategories(
   color: HTMLInputElement,
   storage: HTMLUListElement,
 ) {
-  get_categories_from_api()
+  storage.innerHTML = ''
   categories.forEach((newCategories, index) => {
     if (storage) {
       createCategories(categories, newCategories, color, index, storage)

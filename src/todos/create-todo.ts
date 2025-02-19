@@ -1,24 +1,54 @@
-import type { Todo } from '../main'
+import {
+  changeCategoryForTodos,
+  get_cwt_from_api,
+} from '../categories_with_todos/add_cwt_to_api'
+import type { Categories, Todo } from '../main'
+import { verifyOverdueTodo } from '../verification'
 import { delete_items_from_api, patch_items_from_api } from './add-todo-to-api'
 import { displayTodo } from './display-todos'
-import { verifyOverdueTodo } from './verification'
 
-export function createTodo(
+export async function createTodo(
+  categories: Categories[],
   todos: Todo[],
   newTodo: Todo,
   index: number,
-  storage: HTMLUListElement,
+  container: HTMLUListElement,
+  errorOverdue: HTMLParagraphElement,
 ) {
-  if (storage) {
+  if (container) {
     const todo_li = document.createElement('li')
     todo_li.innerText = newTodo.title
     todo_li.classList.add('todo-element')
+
+    const select = document.createElement('select')
+    const chooseCategorie = document.createElement('option')
+    chooseCategorie.value = 'initial value'
+    chooseCategorie.innerHTML = '--Choose Categorie--'
+
+    select.appendChild(chooseCategorie)
+    for (let i = 0; i < categories.length; i++) {
+      const option = document.createElement('option')
+      option.value = categories[i].id
+      option.innerHTML = categories[i].title
+      select.appendChild(option)
+    }
+
+    select.addEventListener('change', async () => {
+      changeCategoryForTodos(select.value, newTodo.id)
+    })
+
+    const qwe = await get_cwt_from_api()
+    for (let i = 0; i < qwe.length; i++) {
+      if (qwe[i].todo_id === newTodo.id) {
+        select.value = qwe[i].category_id
+      }
+    }
 
     const checkbox = document.createElement('INPUT') as HTMLInputElement
     checkbox.setAttribute('type', 'checkbox')
     checkbox.classList.add('checkbox')
     checkbox.checked = newTodo.done
-    checkbox.addEventListener('change', () => {
+    checkbox.addEventListener('change', async () => {
       todos[index].done = checkbox.checked
       patch_items_from_api(todos, index, checkbox.checked)
     })
@@ -29,11 +59,12 @@ export function createTodo(
       delete_items_from_api(todos, index)
       todos.splice(index, 1)
       todo_li.remove()
-      storage.innerHTML = ''
-      displayTodo(todos, storage)
-      verifyOverdueTodo(todos)
+      displayTodo(todos, container, categories)
+      verifyOverdueTodo(todos, errorOverdue, container)
     })
+
     const add_date = document.createElement('li')
+    add_date.classList.add('no_due_date_error')
     if (newTodo.due_date) {
       add_date.innerText = newTodo.due_date
       add_date.classList.add(getDateColor(new Date(newTodo.due_date)))
@@ -42,12 +73,12 @@ export function createTodo(
       no_due_date.innerText = 'No due date'
       add_date.append(no_due_date)
     }
+
     todo_li.append(add_date)
+    todo_li.append(select)
     todo_li.append(checkbox)
     todo_li.append(deleted_button)
-    storage.append(todo_li)
-
-    console.log(index)
+    container.append(todo_li)
   }
 }
 
